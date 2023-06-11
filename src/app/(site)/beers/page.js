@@ -1,46 +1,24 @@
+"use client";
+
+import useSWR from "swr";
+import Image from "next/image";
+import { notFound } from "next/navigation";
+
 import {
   ArrowLongLeftIcon,
   ArrowLongRightIcon,
 } from "@heroicons/react/20/solid";
-import { HiExclamationCircle } from "react-icons/hi";
+import Link from "next/link";
 
-const products = [
-  {
-    id: 1,
-    name: "Focus Paper Refill",
-    href: "#",
-    price: "$13",
-    description: "3 sizes available",
-    imageSrc:
-      "https://tailwindui.com/img/ecommerce-images/category-page-01-image-card-01.jpg",
-    imageAlt:
-      "Person using a pen to cross a task off a productivity paper card.",
-  },
-  {
-    id: 2,
-    name: "Focus Card Holder",
-    href: "#",
-    price: "$64",
-    description: "Walnut",
-    imageSrc:
-      "https://tailwindui.com/img/ecommerce-images/category-page-01-image-card-02.jpg",
-    imageAlt: "Paper card sitting upright in walnut card holder on desk.",
-  },
-  {
-    id: 3,
-    name: "Focus Carry Case",
-    href: "#",
-    price: "$32",
-    description: "Heather Gray",
-    imageSrc:
-      "https://tailwindui.com/img/ecommerce-images/category-page-01-image-card-03.jpg",
-    imageAlt:
-      "Textured gray felt pouch for paper cards with snap button flap and elastic pen holder loop.",
-  },
-  // More products...
-];
+const fetcher = (url) => fetch(url).then((r) => r.json());
 
 const Beers = () => {
+  const { data, error } = useSWR("https://api.punkapi.com/v2/beers", fetcher);
+
+  if (error) {
+    notFound();
+  }
+
   return (
     <>
       <div className="mx-auto max-w-2xl px-4 pt-10 sm:px-6 lg:max-w-5xl lg:px-8">
@@ -71,23 +49,25 @@ const Beers = () => {
           </h2>
 
           <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
-            {products.map((product) => (
-              <a key={product.id} href={product.href} className="group">
+            {data?.map((item) => (
+              <Link key={item.id} href={`/beers/${item.id}`} className="group">
                 <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg sm:aspect-h-3 sm:aspect-w-2">
-                  <img
-                    src={product.imageSrc}
-                    alt={product.imageAlt}
-                    className="h-full w-full object-cover object-center group-hover:opacity-75"
+                  <Image
+                    src={item.image_url}
+                    alt={item.name}
+                    width="500"
+                    height="500"
+                    className="object-contain group-hover:opacity-75"
                   />
                 </div>
                 <div className="mt-4 flex items-center justify-between text-base font-medium text-gray-900">
-                  <h3>{product.name}</h3>
-                  <p>{product.price}</p>
+                  <h3>{item.name}</h3>
+                  <p>{item.volume?.value}</p>
                 </div>
-                <p className="mt-1 text-sm italic text-gray-500">
-                  {product.description}
+                <p className="mt-1 text-sm italic text-gray-500 line-clamp-4">
+                  {item.description}
                 </p>
-              </a>
+              </Link>
             ))}
           </div>
         </div>

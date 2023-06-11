@@ -9,11 +9,14 @@ import Link from "next/link";
 const navigation = [
   { name: "Home", href: "/" },
   { name: "Beers", href: "/beers" },
+];
+
+const authNavigation = [
   { name: "Cart", href: "/cart" },
   { name: "Orders", href: "/orders" },
 ];
 
-const Navbar = () => {
+const Navbar = ({ session }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const pathname = usePathname();
@@ -26,7 +29,7 @@ const Navbar = () => {
         aria-label="Global"
       >
         <div className="flex lg:flex-1">
-          <a href="#" className="-m-1.5 p-1.5">
+          <Link href="/" className="-m-1.5 p-1.5">
             <span className="sr-only">BrewExplorer</span>
             <div className="flex gap-x-3 justify-center content-center">
               <img
@@ -38,13 +41,14 @@ const Navbar = () => {
                 Brew Explorer
               </h2>
             </div>
-          </a>
+          </Link>
         </div>
         <div className="hidden lg:flex lg:gap-x-12">
           {navigation.map((item) => (
             <Link
               key={item.name}
               href={item.href}
+              as={item.href}
               className={`text-sm font-semibold leading-6 text-gray-900 p-2 
                 ${pathname === item.href ? "border-b-2 border-yellow-500" : ""}
                 `}
@@ -52,20 +56,47 @@ const Navbar = () => {
               {item.name}
             </Link>
           ))}
+          {session?.user &&
+            authNavigation.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                as={item.href}
+                className={`text-sm font-semibold leading-6 text-gray-900 p-2 
+                ${pathname === item.href ? "border-b-2 border-yellow-500" : ""}
+                `}
+              >
+                {item.name}
+              </Link>
+            ))}
         </div>
         <div className="flex flex-1 items-center justify-end gap-x-6">
-          <Link
-            href="/login"
-            className="hidden lg:block lg:text-sm lg:font-semibold lg:leading-6 lg:text-gray-900"
-          >
-            Log in
-          </Link>
-          <a
-            href="#"
-            className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
-            Sign up
-          </a>
+          {session?.user ? (
+            <form action="/auth/signout" method="POST">
+              <button
+                type="submit"
+                className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              >
+                Log out
+              </button>
+            </form>
+          ) : (
+            <Link
+              href="/login"
+              className="hidden lg:block lg:text-sm lg:font-semibold lg:leading-6 lg:text-gray-900"
+            >
+              Log in
+            </Link>
+          )}
+
+          {/* <form action="/auth/signout" method="POST">
+            <button
+              type="submit"
+              className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              Log out
+            </button>
+          </form> */}
         </div>
         <div className="flex lg:hidden">
           <button
@@ -86,7 +117,7 @@ const Navbar = () => {
       >
         <div className="fixed inset-0 z-10" />
         <Dialog.Panel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
-          <div className="flex items-center gap-x-6">
+          <div className="flex justify-between items-center gap-x-6">
             <a href="/" className="-m-1.5 p-1.5">
               <span className="sr-only">BeerExplorer</span>
               <div className="flex justify-center content-center gap-x-3">
@@ -100,12 +131,7 @@ const Navbar = () => {
                 </h2>
               </div>
             </a>
-            <a
-              href="#"
-              className="ml-auto rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-              Sign up
-            </a>
+
             <button
               type="button"
               className="-m-2.5 rounded-md p-2.5 text-gray-700"
@@ -119,22 +145,52 @@ const Navbar = () => {
             <div className="-my-6 divide-y divide-gray-500/10">
               <div className="space-y-2 py-6">
                 {navigation.map((item) => (
-                  <a
+                  <Link
                     key={item.name}
                     href={item.href}
+                    as={item.href}
                     className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                   >
                     {item.name}
-                  </a>
+                  </Link>
                 ))}
+                {session?.user &&
+                  authNavigation.map((item) => (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      as={item.href}
+                      className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
               </div>
+
               <div className="py-6">
-                <Link
+                {session?.user ? (
+                  <form action="/auth/signout" method="POST">
+                    <button
+                      type="submit"
+                      className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    >
+                      Log out
+                    </button>
+                  </form>
+                ) : (
+                  <Link
+                    href="/login"
+                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                  >
+                    Log in
+                  </Link>
+                )}
+                {/* <Link
                   href="/login"
                   className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                 >
                   Log in
-                </Link>
+                </Link> */}
               </div>
             </div>
           </div>
