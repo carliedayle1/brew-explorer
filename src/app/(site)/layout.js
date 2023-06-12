@@ -4,6 +4,7 @@ import "../globals.css";
 import { Lato } from "next/font/google";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
+import "react-toastify/dist/ReactToastify.min.css";
 
 const lato = Lato({ subsets: ["latin"], weight: "400" });
 
@@ -20,10 +21,14 @@ export default async function RootLayout({ children }) {
     data: { session },
   } = await supabase.auth.getSession();
 
+  const { count } = await supabase
+    .from("cart")
+    .select("*", { count: "exact", head: true });
+
   return (
     <html lang="en">
       <body className={lato.className}>
-        <Navbar session={session} />
+        <Navbar session={session} cartCount={count} />
         {children}
         <Footer />
       </body>

@@ -1,23 +1,42 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Dialog } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
+import { Badge } from "flowbite-react";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 const navigation = [
   { name: "Home", href: "/" },
   { name: "Beers", href: "/beers" },
 ];
 
-const authNavigation = [
-  { name: "Cart", href: "/cart" },
-  { name: "Orders", href: "/orders" },
-];
+const authNavigation = [{ name: "Cart", href: "/cart" }];
 
-const Navbar = ({ session }) => {
+const Navbar = ({ session, cartCount }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const supabase = createClientComponentClient();
+  const router = useRouter();
+
+  useEffect(() => {
+    const channel = supabase
+      .channel("*")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "cart" },
+        () => {
+          router.refresh();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [supabase, router]);
 
   const pathname = usePathname();
 
@@ -58,16 +77,20 @@ const Navbar = ({ session }) => {
           ))}
           {session?.user &&
             authNavigation.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                as={item.href}
-                className={`text-sm font-semibold leading-6 text-gray-900 p-2 
+              <div className="flex justify-center items-center" key={item.name}>
+                <Link
+                  href={item.href}
+                  as={item.href}
+                  className={`text-sm font-semibold leading-6 text-gray-900 p-2 
                 ${pathname === item.href ? "border-b-2 border-yellow-500" : ""}
                 `}
-              >
-                {item.name}
-              </Link>
+                >
+                  {item.name}
+                </Link>
+                {item.name === "Cart" && cartCount > 0 && (
+                  <Badge color="failure">{cartCount}</Badge>
+                )}
+              </div>
             ))}
         </div>
         <div className="flex flex-1 items-center justify-end gap-x-6">
@@ -75,7 +98,7 @@ const Navbar = ({ session }) => {
             <form action="/auth/signout" method="POST">
               <button
                 type="submit"
-                className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                className="rounded-md bg-yellow-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
               >
                 Log out
               </button>
@@ -83,7 +106,7 @@ const Navbar = ({ session }) => {
           ) : (
             <Link
               href="/login"
-              className="hidden lg:block lg:text-sm lg:font-semibold lg:leading-6 lg:text-gray-900"
+              className="rounded-md bg-yellow-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
             >
               Log in
             </Link>
@@ -156,14 +179,18 @@ const Navbar = ({ session }) => {
                 ))}
                 {session?.user &&
                   authNavigation.map((item) => (
-                    <Link
-                      key={item.name}
-                      href={item.href}
-                      as={item.href}
-                      className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                    >
-                      {item.name}
-                    </Link>
+                    <div className="flex items-center gap-x-3" key={item.name}>
+                      <Link
+                        href={item.href}
+                        as={item.href}
+                        className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                      >
+                        {item.name}
+                      </Link>
+                      {item.name === "Cart" && cartCount > 0 && (
+                        <Badge color="failure">{cartCount}</Badge>
+                      )}
+                    </div>
                   ))}
               </div>
 
@@ -172,7 +199,7 @@ const Navbar = ({ session }) => {
                   <form action="/auth/signout" method="POST">
                     <button
                       type="submit"
-                      className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                      className="rounded-md bg-yellow-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
                     >
                       Log out
                     </button>
@@ -180,17 +207,11 @@ const Navbar = ({ session }) => {
                 ) : (
                   <Link
                     href="/login"
-                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                    className="rounded-md bg-yellow-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
                   >
                     Log in
                   </Link>
                 )}
-                {/* <Link
-                  href="/login"
-                  className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                >
-                  Log in
-                </Link> */}
               </div>
             </div>
           </div>
