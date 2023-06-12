@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { QuestionMarkCircleIcon, XMarkIcon } from "@heroicons/react/20/solid";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { toast, ToastContainer } from "react-toastify";
 import { useRouter } from "next/navigation";

@@ -57,7 +57,7 @@ const Login = () => {
             }}
             theme="light"
             providers={[]}
-            redirectTo={`${location.origin}/auth/callback`}
+            redirectTo={`${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`}
           />
         </div>
       </div>
