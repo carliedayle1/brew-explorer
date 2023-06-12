@@ -12,7 +12,10 @@ const fetcher = (url) => fetch(url).then((r) => r.json());
 const Beers = () => {
   const [search, setSearch] = useState(null);
 
-  const { data, error } = useSWR(`https://api.punkapi.com/v2/beers`, fetcher);
+  const { data, error, isLoading } = useSWR(
+    `https://api.punkapi.com/v2/beers`,
+    fetcher
+  );
 
   const searchBeers = (e) => {
     e.preventDefault();
@@ -24,7 +27,7 @@ const Beers = () => {
     notFound();
   }
 
-  return !data ? (
+  return !data && !isLoading ? (
     <NoData
       title={"Beers Unavailable"}
       body={"No beers available at the moment, please try again later."}
@@ -73,8 +76,10 @@ const Beers = () => {
                   />
                 </div>
                 <div className="mt-4 flex items-center justify-between text-base font-medium text-gray-900">
-                  <h3>{item.name}</h3>
-                  <p>{item.volume?.value}</p>
+                  <h3 className="font-bold text-lg">{item.name}</h3>
+                  <p>
+                    {item.volume?.value} {item.volume?.unit}
+                  </p>
                 </div>
                 <p className="mt-1 text-sm italic text-gray-500 line-clamp-4">
                   {item.description}

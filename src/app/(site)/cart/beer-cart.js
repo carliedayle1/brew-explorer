@@ -7,6 +7,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { toast, ToastContainer } from "react-toastify";
 import { useRouter } from "next/navigation";
 import NoData from "@/app/components/NoData";
+import Link from "next/link";
 
 const BeerCart = ({ cart }) => {
   const supabase = createClientComponentClient();
@@ -57,14 +58,14 @@ const BeerCart = ({ cart }) => {
             Beer Cart
           </h1>
           <form className="mt-12 lg:grid lg:grid-cols-12 lg:items-start lg:gap-x-12 xl:gap-x-16">
-            <section aria-labelledby="cart-heading" className="lg:col-span-7">
+            <section aria-labelledby="cart-heading" className="lg:col-span-12">
               <h2 id="cart-heading" className="sr-only">
                 Items in your shopping cart
               </h2>
 
               <ul
                 role="list"
-                className="divide-y divide-gray-200 border-b border-t border-gray-200"
+                className="divide-y divide-gray-200 border-b border-t border-gray-200 grid grid-cols-2"
               >
                 {cart.map((item) => (
                   <li key={item.id} className="flex py-6 sm:py-10">
@@ -83,23 +84,19 @@ const BeerCart = ({ cart }) => {
                         <div>
                           <div className="flex justify-between">
                             <h3 className="text-sm">
-                              <a
-                                //   href={product.href}
-                                href="#"
+                              <Link
+                                href={`/beers/${item?.beer?.id}`}
                                 className="font-medium text-gray-700 hover:text-gray-800"
                               >
                                 {item?.beer?.name}
-                              </a>
+                              </Link>
                             </h3>
                           </div>
-                          {/* <div className="mt-1 flex text-sm">
-                          <p className="text-gray-500">{product.color}</p>
-                          {product.size ? (
-                            <p className="ml-4 border-l border-gray-200 pl-4 text-gray-500">
-                              {product.size}
+                          <div className="mt-1 flex text-sm">
+                            <p className="text-gray-500">
+                              {item?.beer?.tagline}
                             </p>
-                          ) : null}
-                        </div> */}
+                          </div>
                           <p className="mt-1 text-sm font-medium text-gray-900">
                             {item?.beer?.volume?.value}{" "}
                             {item?.beer?.volume?.unit}
@@ -107,32 +104,11 @@ const BeerCart = ({ cart }) => {
                         </div>
 
                         <div className="mt-4 sm:mt-0 sm:pr-9">
-                          <label
-                            htmlFor={`quantity-${item?.id}`}
-                            className="sr-only"
-                          >
-                            Quantity, {item?.beer?.name}
-                          </label>
-                          <select
-                            id={`quantity-${item?.id}`}
-                            name={`quantity-${item?.id}`}
-                            className="max-w-full rounded-md border border-gray-300 py-1.5 text-left text-base font-medium leading-5 text-gray-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm"
-                          >
-                            <option value={1}>1</option>
-                            <option value={2}>2</option>
-                            <option value={3}>3</option>
-                            <option value={4}>4</option>
-                            <option value={5}>5</option>
-                            <option value={6}>6</option>
-                            <option value={7}>7</option>
-                            <option value={8}>8</option>
-                          </select>
-
                           <div className="absolute right-0 top-0">
                             <button
                               type="button"
                               onClick={() => removeBeer(item?.id)}
-                              className="-m-2 inline-flex p-2 text-gray-400 hover:text-gray-500"
+                              className="-m-2 inline-flex p-2 text-red-600 hover:text-gray-500"
                             >
                               <span className="sr-only">Remove</span>
                               <XMarkIcon
@@ -143,26 +119,6 @@ const BeerCart = ({ cart }) => {
                           </div>
                         </div>
                       </div>
-
-                      {/* <p className="mt-4 flex space-x-2 text-sm text-gray-700">
-                      {product.inStock ? (
-                        <CheckIcon
-                          className="h-5 w-5 flex-shrink-0 text-green-500"
-                          aria-hidden="true"
-                        />
-                      ) : (
-                        <ClockIcon
-                          className="h-5 w-5 flex-shrink-0 text-gray-300"
-                          aria-hidden="true"
-                        />
-                      )}
-
-                      <span>
-                        {product.inStock
-                          ? "In stock"
-                          : `Ships in ${product.leadTime}`}
-                      </span>
-                    </p> */}
                     </div>
                   </li>
                 ))}
@@ -170,7 +126,7 @@ const BeerCart = ({ cart }) => {
             </section>
 
             {/* Order summary */}
-            <section
+            {/* <section
               aria-labelledby="summary-heading"
               className="mt-16 rounded-lg bg-gray-50 px-4 py-6 sm:p-6 lg:col-span-5 lg:mt-0 lg:p-8"
             >
@@ -240,7 +196,7 @@ const BeerCart = ({ cart }) => {
                   Checkout
                 </button>
               </div>
-            </section>
+            </section> */}
           </form>
         </div>
       </div>
