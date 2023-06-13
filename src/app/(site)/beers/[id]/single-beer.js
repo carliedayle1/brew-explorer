@@ -78,16 +78,28 @@ const SingleBeer = ({ data, session }) => {
 
               <div className="mt-8 lg:col-span-5 lg:col-start-1 lg:row-span-3 lg:row-start-1 lg:mt-0">
                 <h2 className="sr-only">Beer Image</h2>
-
                 <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg sm:aspect-h-3 sm:aspect-w-2">
-                  <Image
-                    src={data[0]?.image_url}
-                    alt={data[0]?.name}
-                    priority
-                    width="500"
-                    height="500"
-                    className="object-contain group-hover:opacity-75"
-                  />
+                  {data[0]?.image_url !== null ? (
+                    <Image
+                      src={data[0]?.image_url}
+                      alt={data[0]?.name}
+                      priority
+                      width="500"
+                      height="500"
+                      placeholder="blur"
+                      blurDataURL={data[0]?.image_url}
+                      className="object-contain group-hover:opacity-75"
+                    />
+                  ) : (
+                    <img
+                      src={`https://placehold.co/400x600?text=No+image+available`}
+                      alt={data[0]?.name}
+                      priority
+                      width="500"
+                      height="500"
+                      className="object-contain group-hover:opacity-75"
+                    />
+                  )}
                 </div>
               </div>
 

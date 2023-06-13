@@ -29,7 +29,7 @@ export default async function RootLayout({ children }) {
     <html lang="en">
       <body className={lato.className}>
         <Navbar session={session} cartCount={count} />
-        {children}
+        <div className="mt-20">{children}</div>
         <Footer />
       </body>
     </html>

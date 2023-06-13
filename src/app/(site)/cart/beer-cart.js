@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { QuestionMarkCircleIcon, XMarkIcon } from "@heroicons/react/20/solid";
+import { XMarkIcon } from "@heroicons/react/20/solid";
 import { useEffect } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { toast, ToastContainer } from "react-toastify";
@@ -65,18 +65,30 @@ const BeerCart = ({ cart }) => {
 
               <ul
                 role="list"
-                className="divide-y divide-gray-200 border-b border-t border-gray-200 grid grid-cols-2"
+                className="divide-y divide-gray-200 border-b border-t border-gray-200 grid grid-cols-1 lg:grid-cols-2"
               >
                 {cart.map((item) => (
                   <li key={item.id} className="flex py-6 sm:py-10">
                     <div className="flex-shrink-0">
-                      <Image
-                        src={item?.beer?.image_url}
-                        alt={item?.beer?.name}
-                        width={500}
-                        height={500}
-                        className="h-24 w-24 rounded-md object-contain object-center sm:h-48 sm:w-48"
-                      />
+                      {item?.beer?.image_url !== null ? (
+                        <Image
+                          src={item?.beer?.image_url}
+                          alt={item?.beer?.name}
+                          width={500}
+                          height={500}
+                          placeholder="blur"
+                          blurDataURL={item?.beer?.image_url}
+                          className="h-24 w-24 rounded-md object-contain object-center sm:h-48 sm:w-48"
+                        />
+                      ) : (
+                        <img
+                          src={`https://placehold.co/400x600?text=No+image+available`}
+                          alt={item?.beer?.name}
+                          width={500}
+                          height={500}
+                          className="h-24 w-24 rounded-md object-contain object-center sm:h-48 sm:w-48"
+                        />
+                      )}
                     </div>
 
                     <div className="ml-4 flex flex-1 flex-col justify-between sm:ml-6">

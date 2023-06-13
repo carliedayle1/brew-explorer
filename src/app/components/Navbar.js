@@ -41,10 +41,10 @@ const Navbar = ({ session, cartCount }) => {
   const pathname = usePathname();
 
   return (
-    <header className="bg-white">
+    <header className="bg-white relative ">
       {/* Header */}
       <nav
-        className="mx-auto flex max-w-7xl items-center justify-between gap-x-6 p-6 lg:px-8"
+        className="fixed top-0 left-0 right-0 mx-auto flex max-w-full items-center justify-between gap-x-6 p-6 lg:px-24 xl:px-32 bg-gradient-to-r from-blue-400 via-sky-300 to-yellow-200 z-10"
         aria-label="Global"
       >
         <div className="flex lg:flex-1">
@@ -68,7 +68,7 @@ const Navbar = ({ session, cartCount }) => {
               key={item.name}
               href={item.href}
               as={item.href}
-              className={`text-sm font-semibold leading-6 text-gray-900 p-2 
+              className={`text-medium font-semibold leading-6 text-gray-900 p-2 
                 ${pathname === item.href ? "border-b-2 border-yellow-500" : ""}
                 `}
             >
@@ -81,7 +81,7 @@ const Navbar = ({ session, cartCount }) => {
                 <Link
                   href={item.href}
                   as={item.href}
-                  className={`text-sm font-semibold leading-6 text-gray-900 p-2 
+                  className={`text-medium font-semibold leading-6 text-gray-900 p-2 
                 ${pathname === item.href ? "border-b-2 border-yellow-500" : ""}
                 `}
                 >

@@ -6,6 +6,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "images.punkapi.com",
       },
+      {
+        protocol: "https",
+        hostname: "placehold.co",
+      },
     ],
   },
 };
