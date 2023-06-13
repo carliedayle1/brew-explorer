@@ -35,7 +35,7 @@ const Beers = () => {
       return toast.error("You can't go back any further.");
     }
 
-    if (data && data.length <= PER_PAGE) {
+    if (data && data.length < PER_PAGE) {
       return toast.error("No more entries");
     }
     setCurrentPage(page);
