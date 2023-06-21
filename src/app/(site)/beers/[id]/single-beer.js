@@ -9,12 +9,16 @@ import { toast, ToastContainer } from "react-toastify";
 import { ImSpoonKnife } from "react-icons/im";
 import { BsCheck2Circle } from "react-icons/bs";
 import { Card, Table } from "flowbite-react";
-import { useRouter } from "next/navigation";
+import { useRouter, notFound } from "next/navigation";
 
 const SingleBeer = ({ data, session }) => {
   const supabase = createClientComponentClient();
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  if (!data) {
+    notFound();
+  }
 
   const insertCart = async () => {
     try {
